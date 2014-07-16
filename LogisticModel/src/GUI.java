@@ -21,11 +21,11 @@ public class GUI {
 	static final int R_RES_INIT = 3000;
 	
 	/*TODO: Remake this so the user will control those values.*/
-	static final double X0 = 0.001;
-	static final double MIN_X = 0.0;	// At least 0.0
-	static final double MAX_X = 1.0;	// At most 1.0
-	static final double MIN_R = 3.55;	// At least 0.0
-	static final double MAX_R = 4.0;	// At most 4.0
+	private double x0 = 0.001;
+	private double minX = 0.0;	// At least 0.0
+	private double maxX = 1.0;	// At most 1.0
+	private double minR = 3.55;	// At least 0.0
+	private double maxR = 4.0;	// At most 4.0
 	
 	private int initValue = INIT_INIT;
 	private int xResValue = X_RES_INIT;
@@ -103,13 +103,15 @@ public class GUI {
 		rResSlider.setName(R_RANGE_LABEL);
 		resetButton.addActionListener(new ButtonListener());
 		resetButton.setActionCommand("reset");
+		diagram.addMouseMotionListener(new MotionListener());
 		
 		mainFrame.setVisible(true);
 	}
 	
 	private class ButtonListener implements ActionListener {
-		public void actionPerformed(ActionEvent event) {
-			String command = event.getActionCommand(); 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand(); 
 			if( command.equals( "reset" ))  {
 	            initValue = initSlider.getValue();
 	            xResValue = xResSlider.getValue();
@@ -120,6 +122,7 @@ public class GUI {
 	}
 	
 	private class SliderListener implements ChangeListener {
+		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSlider source = (JSlider)e.getSource();
 			if (source.getValueIsAdjusting()) {
@@ -127,42 +130,43 @@ public class GUI {
 				statusLabel.setText(""+source.getName()+" "+fps);
 			}
 			else {
-				/*//DESTROY!!!
-				int fps = (int)source.getValue();
-				if (source ==  initSlider) {
-					initValue = fps; 
-				}
-				else if (source == xResSlider) {
-					xResValue = fps;
-				}
-				else if (source == rResSlider) {
-					rResValue = fps;
-				}
-				*/
 				statusLabel.setText("");
 			}
 		}
 	}
 	
+	private class MotionListener implements MouseMotionListener {
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			statusLabel.setText(""+e.getX());
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+		}
+ 
+	}
+	
 	private class Diagram extends Canvas {
 		private static final long serialVersionUID = -6097526300504399996L;
 
+		@Override
 		public void paint(Graphics g) {
 			Rectangle b = g.getClipBounds();
-			int maxX = (int)b.getMaxX();
-			int maxY = (int)b.getMaxY();
+			int maxCanvasX = (int)b.getMaxX();
+			int maxCanvasY = (int)b.getMaxY();
 			LogisticMap lMap = new LogisticMap(0,0);
 			
 			for (int i=1; i<=rResValue; i++) {
-				double r = MIN_R + (MAX_R-MIN_R)*i/rResValue;
-				int rCoord = maxX*i/rResValue;
+				double r = minR + (maxR-minR)*i/rResValue;
+				int rCoord = maxCanvasX*i/rResValue;
 				lMap.setR(r);
-				lMap.setX(X0);
+				lMap.setX(x0);
 				//lMap.setX(Math.random());
 				lMap.iterate(initValue);
 				for (int j=1; j<=xResValue; j++) {
 					double x = lMap.next();
-					int xCoord = (int)(maxY*(x-MAX_X)/(MIN_X-MAX_X));
+					int xCoord = (int)(maxCanvasY*(x-maxX)/(minX-maxX));
 					g.drawLine(rCoord,xCoord,rCoord,xCoord);	
 				}
 			}
