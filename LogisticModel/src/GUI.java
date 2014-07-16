@@ -123,9 +123,12 @@ public class GUI {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand(); 
 			if( command.equals( "reset" ))  {
-	            initValue = initSlider.getValue();
-	            xResValue = xResSlider.getValue();
-	            rResValue = rResSlider.getValue();
+				/* TODO: MOVE ALL OF THIS TO THE CONSTANTS AREA! */ 
+				x0 = 0.001;
+				minR = 3.55;
+				maxR = 4.0;
+				minX = 0.0;
+				maxX = 1.0;
 	            statusLabel.setText("reset.");
 	         }
 		}
@@ -140,6 +143,10 @@ public class GUI {
 				statusLabel.setText(""+source.getName()+" "+fps);
 			}
 			else {
+				int fps = (int)source.getValue();
+				if (source == initSlider) initValue = fps;
+				else if (source == rResSlider) rResValue = fps;
+				else if (source == xResSlider) xResValue = fps;
 				statusLabel.setText("");
 			}
 		}
@@ -166,10 +173,14 @@ public class GUI {
 					isZooming = true;
 					zoomMinCanvasX = e.getX();
 					zoomMinCanvasY = e.getY();
+					zoomMaxCanvasX = e.getX();
+					zoomMaxCanvasY = e.getY();
 				}
-				zoomMaxCanvasX = e.getX();
-				zoomMaxCanvasY = e.getY();
 				Graphics g = diagram.getGraphics();
+				zoomMinCanvasX = Math.min(zoomMinCanvasX,e.getX());
+				zoomMinCanvasY = Math.min(zoomMinCanvasY,e.getY());
+				zoomMaxCanvasX = Math.max(zoomMaxCanvasX,e.getX());
+				zoomMaxCanvasY = Math.max(zoomMaxCanvasY,e.getY());
 				g.drawRect(zoomMinCanvasX, zoomMinCanvasY, zoomMaxCanvasX-zoomMinCanvasX, zoomMaxCanvasY-zoomMinCanvasY);
 			}
 		}
@@ -185,11 +196,8 @@ public class GUI {
 	private class MouseClickListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			Object source = e.getSource();
-			/*if (source == diagram) {
-				Graphics g = diagram.getGraphics();
-			}*/
 		}
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {
 		}
@@ -205,6 +213,16 @@ public class GUI {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			isZooming = false;
+			Object source = e.getSource();
+			if (source == diagram) {
+				Rectangle b = diagram.getBounds();
+				int maxCanvasX = (int)b.getMaxX();
+				int maxCanvasY = (int)b.getMaxY();
+				maxX = maxX + (minX-maxX)*zoomMinCanvasY/maxCanvasY;
+				minX = maxX + (minX-maxX)*zoomMaxCanvasY/maxCanvasY;
+				minR = minR + (maxR-minR)*zoomMinCanvasX/maxCanvasX;
+				maxR = minR + (maxR-minR)*zoomMaxCanvasX/maxCanvasX;
+			}
 		}
 		
 	}
