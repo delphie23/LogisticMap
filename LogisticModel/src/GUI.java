@@ -32,14 +32,16 @@ public class GUI {
 	private int rResValue = R_RES_INIT;
 	private int xResValue = X_RES_INIT;
 	
+	private boolean mouseIsDown = false;
+	
 	private JFrame mainFrame; // The main panel.
 	private JPanel statusBar;
 	private JPanel controlBar;
 	private Diagram diagram; // Bifurcation Diagram. REPLACE
 	private JLabel statusLabel; // Should read the coordinates of the mouse.
 	private JLabel initLabel;
-	private JLabel rRangeLabel;
-	private JLabel xRangeLabel;
+	private JLabel rResLabel;
+	private JLabel xResLabel;
 	private JButton resetButton;
 	private JSlider initSlider;
 	private JSlider rResSlider;
@@ -61,8 +63,8 @@ public class GUI {
 		
 		statusLabel = new JLabel("",JLabel.CENTER);
 		initLabel = new JLabel(INIT_LABEL,JLabel.RIGHT);
-		rRangeLabel = new JLabel(R_RANGE_LABEL, JLabel.RIGHT);
-		xRangeLabel = new JLabel(X_RANGE_LABEL, JLabel.RIGHT);
+		rResLabel = new JLabel(R_RANGE_LABEL, JLabel.RIGHT);
+		xResLabel = new JLabel(X_RANGE_LABEL, JLabel.RIGHT);
 		
 		resetButton = new JButton(RESET_LABEL);
 		
@@ -91,9 +93,9 @@ public class GUI {
 		controlBar.setLayout(new GridLayout(1,7));
 		controlBar.add(initLabel);
 		controlBar.add(initSlider);
-		controlBar.add(rRangeLabel);
+		controlBar.add(rResLabel);
 		controlBar.add(rResSlider);
-		controlBar.add(xRangeLabel);
+		controlBar.add(xResLabel);
 		controlBar.add(xResSlider);
 		controlBar.add(resetButton);
 		
@@ -106,6 +108,7 @@ public class GUI {
 		resetButton.addActionListener(new ButtonListener());
 		resetButton.setActionCommand("reset");
 		diagram.addMouseMotionListener(new MotionListener());
+		diagram.addMouseListener(new MouseClickListener());
 		
 		mainFrame.setVisible(true);
 	}
@@ -145,8 +148,6 @@ public class GUI {
 				Rectangle b = diagram.getBounds();
 				int maxCanvasX = (int)b.getMaxX();
 				int maxCanvasY = (int)b.getMaxY();
-				//double r = minR + e.getX()*maxR/maxCanvasX;
-				//double r = e.getX()/(double)maxCanvasX;
 				double r = minR + (maxR-minR)*e.getX()/maxCanvasX;
 				if (r<minR) r = minR;
 				if (r>maxR) r  = maxR;
@@ -159,8 +160,36 @@ public class GUI {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			statusLabel.setText("");
 		}
  
+	}
+	
+	private class MouseClickListener implements MouseListener {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			mouseIsDown = true;
+			Object source = e.getSource();
+			if (source == diagram) {
+				rResLabel.setText("DIAGRAM!!!");
+			}
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+		
 	}
 	
 	private class Diagram extends Canvas {
