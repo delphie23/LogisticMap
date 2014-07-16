@@ -32,7 +32,12 @@ public class GUI {
 	private int rResValue = R_RES_INIT;
 	private int xResValue = X_RES_INIT;
 	
-	private boolean mouseIsDown = false;
+	/* Zooming variables */
+	private boolean isZooming = false;
+	private int zoomMinCanvasX;
+	private int zoomMinCanvasY;
+	private int zoomMaxCanvasX;
+	private int zoomMaxCanvasY;
 	
 	private JFrame mainFrame; // The main panel.
 	private JPanel statusBar;
@@ -155,11 +160,23 @@ public class GUI {
 				if (x<minX) x = minX;
 				if (x>maxX) x = maxX;
 				statusLabel.setText("r="+r+", x="+x);
+				
+				/* Draw zooming rectangle */
+				if (!isZooming) {
+					isZooming = true;
+					zoomMinCanvasX = e.getX();
+					zoomMinCanvasY = e.getY();
+				}
+				zoomMaxCanvasX = e.getX();
+				zoomMaxCanvasY = e.getY();
+				Graphics g = diagram.getGraphics();
+				g.drawRect(zoomMinCanvasX, zoomMinCanvasY, zoomMaxCanvasX-zoomMinCanvasX, zoomMaxCanvasY-zoomMinCanvasY);
 			}
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			isZooming = false;
 			statusLabel.setText("");
 		}
  
@@ -168,11 +185,10 @@ public class GUI {
 	private class MouseClickListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			mouseIsDown = true;
 			Object source = e.getSource();
-			if (source == diagram) {
-				rResLabel.setText("DIAGRAM!!!");
-			}
+			/*if (source == diagram) {
+				Graphics g = diagram.getGraphics();
+			}*/
 		}
 		@Override
 		public void mouseEntered(MouseEvent e) {
@@ -188,6 +204,7 @@ public class GUI {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			isZooming = false;
 		}
 		
 	}
