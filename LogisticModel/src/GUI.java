@@ -5,11 +5,14 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class GUI {
+	/* Constants */
 	static final String FRAME_LABEL = "Logistic Model";
 	static final String INIT_LABEL = "Initial iterations:";
 	static final String R_RANGE_LABEL = "R resolution:";
 	static final String X_RANGE_LABEL = "X resolution:";
 	static final String RESET_LABEL = "Reset";
+	static final int X_SIZE = 640;
+	static final int Y_SIZE = 480;
 	static final int INIT_MIN = 0;
 	static final int INIT_MAX = 10000;
 	static final int INIT_INIT = 1000;
@@ -19,14 +22,17 @@ public class GUI {
 	static final int X_RES_MIN = 1;
 	static final int X_RES_MAX = 10000;
 	static final int X_RES_INIT = 1000;
+	static final double X0 = 0.001;
+	static final double MIN_R = 3.55;	// At least 0.0
+	static final double MAX_R = 4.0;	// At most 4.0
+	static final double MIN_X = 0.0;	// At least 0.0
+	static final double MAX_X = 1.0;	// At most 1.0
 	
-	
-	/*TODO: Remake this so the user will control those values.*/
-	private double x0 = 0.001;
-	private double minR = 3.55;	// At least 0.0
-	private double maxR = 4.0;	// At most 4.0
-	private double minX = 0.0;	// At least 0.0
-	private double maxX = 1.0;	// At most 1.0
+	private double x0 = X0;
+	private double minR = MIN_R;
+	private double maxR = MAX_R;
+	private double minX = MIN_X;
+	private double maxX = MAX_X;
 	
 	private int initValue = INIT_INIT;
 	private int rResValue = R_RES_INIT;
@@ -42,7 +48,7 @@ public class GUI {
 	private JFrame mainFrame; // The main panel.
 	private JPanel statusBar;
 	private JPanel controlBar;
-	private Diagram diagram; // Bifurcation Diagram. REPLACE
+	private Diagram diagram; // Bifurcation Diagram.
 	private JLabel statusLabel; // Should read the coordinates of the mouse.
 	private JLabel initLabel;
 	private JLabel rResLabel;
@@ -51,20 +57,15 @@ public class GUI {
 	private JSlider initSlider;
 	private JSlider rResSlider;
 	private JSlider xResSlider;
-	  
-	
-	public static void main(String[] args){
-		new GUI();
-	}
 	
 	public GUI() {
 		mainFrame = new JFrame(FRAME_LABEL);
 		mainFrame.setLayout(new BorderLayout());
-		mainFrame.setSize(640,480); // TODO: move this to the constants sections.
+		mainFrame.setSize(X_SIZE,Y_SIZE);
 		
 		statusBar = new JPanel();
 		controlBar = new JPanel();
-		diagram = new Diagram(); // CAREFUL!!!
+		diagram = new Diagram();
 		
 		statusLabel = new JLabel("",JLabel.CENTER);
 		initLabel = new JLabel(INIT_LABEL,JLabel.RIGHT);
@@ -122,13 +123,12 @@ public class GUI {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand(); 
-			if( command.equals( "reset" ))  {
-				/* TODO: MOVE ALL OF THIS TO THE CONSTANTS AREA! */ 
-				x0 = 0.001;
-				minR = 3.55;
-				maxR = 4.0;
-				minX = 0.0;
-				maxX = 1.0;
+			if( command.equals( "reset" ))  { 
+				x0 = X0;
+				minR = MIN_R;
+				maxR = MAX_R;
+				minX = MIN_X;
+				maxX = MAX_X;
 	            statusLabel.setText("reset.");
 	         }
 		}
@@ -242,12 +242,12 @@ public class GUI {
 				int rCoord = maxCanvasX*i/rResValue;
 				lMap.setR(r);
 				lMap.setX(x0);
-				//lMap.setX(Math.random());
+				//lMap.setX(Math.random()); //Random initial value instead of constant.
 				lMap.iterate(initValue);
 				for (int j=1; j<=xResValue; j++) {
 					double x = lMap.next();
 					int xCoord = (int)(maxCanvasY*(x-maxX)/(minX-maxX));
-					g.drawLine(rCoord,xCoord,rCoord,xCoord);	
+					g.drawLine(rCoord,xCoord,rCoord,xCoord);
 				}
 			}
 		}
