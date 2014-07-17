@@ -129,6 +129,9 @@ public class GUI {
 				maxR = MAX_R;
 				minX = MIN_X;
 				maxX = MAX_X;
+				initValue = INIT_INIT;
+				rResValue = R_RES_INIT;
+				xResValue = X_RES_INIT;
 	            statusLabel.setText("reset.");
 	         }
 		}
