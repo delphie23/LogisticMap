@@ -11,6 +11,7 @@ public class GUI {
 	static final String R_RANGE_LABEL = "R resolution:";
 	static final String X_RANGE_LABEL = "X resolution:";
 	static final String RESET_LABEL = "Reset";
+	static final String ZOOM_LABEL = "Zoom";
 	static final int X_SIZE = 640;
 	static final int Y_SIZE = 480;
 	static final int INIT_MIN = 0;
@@ -57,6 +58,17 @@ public class GUI {
 	private JSlider initSlider;
 	private JSlider rResSlider;
 	private JSlider xResSlider;
+	/* TODO: add input field so the user will be able to zoom specifically.*/
+	private JPanel zoomPanel;
+	private JButton zoomButton;
+	private JLabel rMinLabel;
+	private JLabel rMaxLabel;
+	private JLabel xMinLabel;
+	private JLabel xMaxLabel;
+	private JTextField rMinField;
+	private JTextField rMaxField;
+	private JTextField xMinField;
+	private JTextField xMaxField;
 	
 	public GUI() {
 		mainFrame = new JFrame(FRAME_LABEL);
