@@ -23,7 +23,7 @@ public class GUI {
 	static final int X_RES_MAX = 10000;
 	static final int X_RES_INIT = 1000;
 	static final double X0 = 0.001;
-	static final double MIN_R = 3.55;	// At least 0.0
+	static final double MIN_R = 1;	// At least 1.0
 	static final double MAX_R = 4.0;	// At most 4.0
 	static final double MIN_X = 0.0;	// At least 0.0
 	static final double MAX_X = 1.0;	// At most 1.0
