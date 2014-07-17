@@ -130,8 +130,11 @@ public class GUI {
 				minX = MIN_X;
 				maxX = MAX_X;
 				initValue = INIT_INIT;
+				initSlider.setValue(INIT_INIT);
 				rResValue = R_RES_INIT;
+				rResSlider.setValue(R_RES_INIT);
 				xResValue = X_RES_INIT;
+				xResSlider.setValue(X_RES_INIT);
 	            statusLabel.setText("reset.");
 	         }
 		}
